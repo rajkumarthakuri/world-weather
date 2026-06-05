@@ -4,10 +4,12 @@
 const body = document.body;
 const btn = document.getElementById("themeToggle");
 
+// Apply saved theme on load
 if (localStorage.getItem("theme") === "light") {
     body.classList.add("light");
     btn.textContent = "🌙";
 } else {
+    body.classList.remove("light");
     btn.textContent = "☀️";
 }
 
@@ -22,7 +24,7 @@ btn.addEventListener("click", () => {
         btn.textContent = "☀️";
     }
 
-    // Re-apply weather theme after toggling
+    // Re-apply weather background after toggling
     const weatherMain = document.body.getAttribute("data-weather");
     if (weatherMain) setTheme(weatherMain);
 });
@@ -37,12 +39,14 @@ window.addEventListener("load", () => {
 
     const params = new URLSearchParams(window.location.search);
 
+    // If the URL already has coordinates or a city, skip the permission prompt
     if (params.get("lat") || params.get("lon") || params.get("city")) {
         loader.style.display = "none";
         permUI.style.display = "none";
         return;
     }
 
+    // First visit — show permission UI
     permUI.style.display = "flex";
 });
 
@@ -57,20 +61,26 @@ function startLocation() {
     permUI.style.display = "none";
     loader.style.display = "flex";
 
+    if (!navigator.geolocation) {
+        loader.style.display = "none";
+        alert("Geolocation is not supported by your browser.");
+        window.location.href = "/weather?city=Kathmandu";
+        return;
+    }
+
     navigator.geolocation.getCurrentPosition(
         (pos) => {
             const lat = pos.coords.latitude;
             const lon = pos.coords.longitude;
-            setTimeout(() => {
-                window.location.href = `/weather?lat=${lat}&lon=${lon}`;
-            }, 500);
+            window.location.href = `/weather?lat=${lat}&lon=${lon}`;
         },
         (err) => {
             loader.style.display = "none";
+            console.error("Geolocation error:", err.code, err.message);
             alert("Location permission denied. Showing default city.");
-            console.error(err);
             window.location.href = "/weather?city=Kathmandu";
-        }
+        },
+        { timeout: 10000, enableHighAccuracy: false }
     );
 }
 
@@ -84,21 +94,43 @@ function skipLocation() {
 // MANUAL LOCATION BUTTON
 // ─────────────────────────────────────────────
 function getLocationWeather() {
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(locationSuccess, locationError);
-    } else {
+    if (!navigator.geolocation) {
         alert("Geolocation not supported by your browser.");
+        return;
     }
-}
 
-function locationSuccess(position) {
-    const lat = position.coords.latitude;
-    const lon = position.coords.longitude;
-    window.location.href = `/weather?lat=${lat}&lon=${lon}`;
-}
+    // Show a brief visual feedback on the button
+    const locBtn = document.querySelector(".location-btn");
+    if (locBtn) {
+        locBtn.style.opacity = "0.5";
+        locBtn.style.pointerEvents = "none";
+    }
 
-function locationError() {
-    alert("Location access denied.");
+    navigator.geolocation.getCurrentPosition(
+        (position) => {
+            const lat = position.coords.latitude;
+            const lon = position.coords.longitude;
+            window.location.href = `/weather?lat=${lat}&lon=${lon}`;
+        },
+        (err) => {
+            if (locBtn) {
+                locBtn.style.opacity = "1";
+                locBtn.style.pointerEvents = "auto";
+            }
+            console.error("Location error:", err.code, err.message);
+
+            if (err.code === 1) {
+                alert("Location access denied. Please allow location in your browser settings.");
+            } else if (err.code === 2) {
+                alert("Location unavailable. Please try searching for your city instead.");
+            } else if (err.code === 3) {
+                alert("Location request timed out. Please try again.");
+            } else {
+                alert("Could not get your location. Please search manually.");
+            }
+        },
+        { timeout: 10000, enableHighAccuracy: false }
+    );
 }
 
 
@@ -112,7 +144,7 @@ const themes = {
     Thunderstorm: {
         dark:  "linear-gradient(160deg, #0a0a0f 0%, #1a1025 40%, #0d1a2e 100%)",
         light: "linear-gradient(160deg, #2c2c3e 0%, #3b2d4a 50%, #2a3a50 100%)",
-        text:  { dark: "#e0d0ff", light: "#1a1025" },
+        text:  { dark: "#e0d0ff", light: "#f0e8ff" },
         animation: "thunder"
     },
     Drizzle: {
@@ -199,14 +231,14 @@ function setTheme(weather) {
     const isLight = document.body.classList.contains("light");
     const theme = themes[weather] || themes["Clouds"];
 
+    // Set body gradient background
     body.style.background = isLight ? theme.light : theme.dark;
     body.style.color = isLight ? theme.text.light : theme.text.dark;
     body.style.backgroundAttachment = "fixed";
+    body.style.backgroundSize = "400% 400%";
 
-    // Remove any existing weather animation class
+    // Remove existing animation class, add new one
     body.classList.remove("anim-thunder", "anim-rain", "anim-snow", "anim-fog", "anim-clear", "anim-clouds");
-
-    // Add new animation class
     if (theme.animation) {
         body.classList.add(`anim-${theme.animation}`);
     }

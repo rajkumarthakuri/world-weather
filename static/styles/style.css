@@ -1,12 +1,29 @@
+/* ─────────────────────────────────────────────
+   CSS VARIABLES
+   The body background is always set dynamically
+   by JS (setTheme). These vars handle cards/UI.
+   ───────────────────────────────────────────── */
 :root {
-    --bg: #000000;
+    /* Dark mode defaults */
+    --card-bg: rgba(255, 255, 255, 0.07);
+    --card-border: rgba(255, 255, 255, 0.12);
     --text: #ffffff;
-    --card: #000000;
+    --input-bg: rgba(255, 255, 255, 0.1);
+    --input-border: rgba(255, 255, 255, 0.25);
+    --input-text: #ffffff;
+    --btn-bg: rgba(255, 255, 255, 0.15);
+    --btn-text: #ffffff;
 }
+
 body.light {
-    --bg: #ffffff;
+    --card-bg: rgba(255, 255, 255, 0.55);
+    --card-border: rgba(0, 0, 0, 0.1);
     --text: #111111;
-    --card: #f2f2f2;
+    --input-bg: rgba(255, 255, 255, 0.7);
+    --input-border: rgba(0, 0, 0, 0.2);
+    --input-text: #111111;
+    --btn-bg: rgba(255, 255, 255, 0.8);
+    --btn-text: #111111;
 }
 
 * {
@@ -18,25 +35,31 @@ body.light {
 body {
     font-family: 'Poppins', sans-serif;
     min-height: 100vh;
-    background: var(--bg);
+    /* background is set by JS — fallback only: */
+    background: linear-gradient(160deg, #1a2030 0%, #2a3040 50%, #1e2838 100%);
     color: var(--text);
     text-align: center;
-    gap: 20px;
-    margin-top: 20px;
-    justify-content: center;
-    align-items: center;
-    transition: opacity 0.4s ease;
+    padding-top: 20px;
+    padding-bottom: 40px;
+    transition: color 0.4s ease;
+    background-size: 400% 400%;
+    background-attachment: fixed;
 }
 
 /* ─── Weather Card ───────────────────────────── */
 .card {
-    background: var(--card);
-    color: var(--text);
-    padding: 15px;
-    box-shadow: 0 10px 25px rgba(7, 225, 225, 0.84);
+    background: var(--card-bg);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);   
+    border: 1px solid var(--card-border);
+    color: inherit;
+    padding: 20px 15px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+    border-radius: 16px;
     text-align: center;
     width: auto;
-    margin-bottom: 5px;
+    max-width: 700px;
+    margin: 0 auto 10px;
 }
 
 .card h1 {
@@ -85,7 +108,7 @@ body {
 }
 
 .stat-item {
-    background: rgba(7, 225, 225, 0.08);
+    background: rgba(7, 225, 225, 0.1);
     border: 1px solid rgba(7, 225, 225, 0.25);
     border-radius: 12px;
     padding: 14px 10px;
@@ -97,7 +120,7 @@ body {
 }
 
 .stat-item:hover {
-    background: rgba(7, 225, 225, 0.18);
+    background: rgba(7, 225, 225, 0.2);
 }
 
 .stat-item i {
@@ -107,7 +130,7 @@ body {
 
 .stat-label {
     font-size: 0.72rem;
-    opacity: 0.65;
+    opacity: 0.7;
     text-transform: uppercase;
     letter-spacing: 0.05em;
 }
@@ -118,8 +141,8 @@ body {
 }
 
 body.light .stat-item {
-    background: rgba(0, 120, 200, 0.07);
-    border-color: rgba(0, 120, 200, 0.2);
+    background: rgba(0, 120, 200, 0.1);
+    border-color: rgba(0, 120, 200, 0.25);
 }
 
 body.light .stat-item i {
@@ -133,7 +156,7 @@ body.light .stat-item i {
     gap: 40px;
     margin-top: 16px;
     padding-top: 14px;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
     flex-wrap: wrap;
 }
 
@@ -222,8 +245,22 @@ body.light .sun-times {
     font-size: 1rem;
     padding: 0 15px;
     border-radius: 20px;
-    border: 1px solid #ccc;
+    border: 1px solid var(--input-border);
     outline: none;
+    background: var(--input-bg);
+    color: var(--input-text);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);    
+    transition: border-color 0.2s, background 0.2s;
+}
+
+.search-form input::placeholder {
+    color: inherit;
+    opacity: 0.5;
+}
+
+.search-form input:focus {
+    border-color: #07e1e1;
 }
 
 .search-btn {
@@ -236,8 +273,10 @@ body.light .sun-times {
     align-items: center;
     justify-content: center;
     font-size: 18px;
-    background: white;
-    color: black;
+    background: var(--btn-bg);
+    color: var(--btn-text);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);   
     transition: 0.2s;
     flex-shrink: 0;
 }
@@ -291,15 +330,30 @@ body.light .sun-times {
 
 .forecast-card {
     width: clamp(100px, 14vw, 150px);
-    padding: 8px 6px;
-    background: rgb(4, 188, 239);
-    border-radius: 10px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    padding: 10px 8px;
+    /* Glassmorphism — matches the weather card style */
+    background: rgba(4, 188, 239, 0.25);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);   
+    border: 1px solid rgba(4, 188, 239, 0.4);
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 6px;
-    color: #000;
+    color: inherit;  /* inherits from body — works in both dark/light */
+    transition: background 0.3s;
+}
+
+.forecast-card:hover {
+    background: rgba(4, 188, 239, 0.35);
+}
+
+body.light .forecast-card {
+    background: rgba(4, 188, 239, 0.3);
+    border-color: rgba(4, 188, 239, 0.5);
+    color: #0d1a22;
 }
 
 .forecast-day {
@@ -312,6 +366,7 @@ body.light .sun-times {
     font-size: clamp(0.7rem, 2vw, 0.88rem);
     margin: 0;
     line-height: 1.2;
+    opacity: 0.85;
 }
 
 .forecast-temp {
@@ -326,29 +381,35 @@ body.light .sun-times {
     margin: 0;
 }
 
-/* ─── Misc ───────────────────────────────────── */
-.rain-alert {
-    background: rgba(0, 150, 255, 0.1);
-    color: #0077ff;
-    padding: 6px 12px;
-    border-radius: 10px;
-    margin-top: 10px;
-    font-weight: bold;
-}
-
+/* ─── Theme Toggle Button ────────────────────── */
 .theme-btn {
     position: fixed;
     top: 15px;
     right: 15px;
     z-index: 1000;
-    background: var(--card);
-    color: var(--text);
-    border: none;
+    /* Glassmorphism — always visible on any background */
+    background: rgba(255, 255, 255, 0.15);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);    
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    color: #ffffff;
     padding: 10px 12px;
     border-radius: 50%;
     cursor: pointer;
     font-size: 1.2rem;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+    transition: background 0.2s, transform 0.2s;
+}
+
+.theme-btn:hover {
+    background: rgba(255, 255, 255, 0.25);
+    transform: scale(1.1);
+}
+
+body.light .theme-btn {
+    background: rgba(0, 0, 0, 0.15);
+    border-color: rgba(0, 0, 0, 0.2);
+    color: #111111;
 }
 
 /* ─── Loading / Permission Overlays ─────────── */
@@ -358,8 +419,10 @@ body.light .sun-times {
     left: 0;
     width: 100%;
     height: 100%;
-    background: var(--bg);
-    color: var(--text);
+    background: rgba(0, 0, 0, 0.75);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);   
+    color: #ffffff;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -381,6 +444,8 @@ body.light .sun-times {
     position: fixed;
     inset: 0;
     background: rgba(0, 0, 0, 0.7);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);   
     display: none;
     justify-content: center;
     align-items: center;
@@ -388,15 +453,20 @@ body.light .sun-times {
 }
 
 .perm-box {
-    background: var(--card);
+    background: rgba(255, 255, 255, 0.1);
+     -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(20px);   
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #ffffff;
     padding: 30px 24px;
-    border-radius: 12px;
+    border-radius: 16px;
     text-align: center;
     display: flex;
     flex-direction: column;
     gap: 14px;
     max-width: 320px;
     width: 90vw;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
 }
 
 .perm-box button {
@@ -414,9 +484,29 @@ body.light .sun-times {
     color: #000;
 }
 
+.perm-box button:first-of-type:hover {
+    background: #05bebe;
+    transform: scale(1.03);
+}
+
 .perm-box button:last-of-type {
-    background: rgba(255,255,255,0.15);
-    color: var(--text);
+    background: rgba(255, 255, 255, 0.15);
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+.perm-box button:last-of-type:hover {
+    background: rgba(255, 255, 255, 0.25);
+}
+
+/* ─── Misc ───────────────────────────────────── */
+.rain-alert {
+    background: rgba(0, 150, 255, 0.1);
+    color: #0077ff;
+    padding: 6px 12px;
+    border-radius: 10px;
+    margin-top: 10px;
+    font-weight: bold;
 }
 
 /* ─── Responsive ─────────────────────────────── */
@@ -432,6 +522,10 @@ body.light .sun-times {
 
     .forecast-container {
         gap: 6px;
+    }
+
+    .card {
+        margin: 0 10px 10px;
     }
 }
 
@@ -450,7 +544,6 @@ body.light .sun-times {
    DYNAMIC WEATHER ANIMATIONS
    ═══════════════════════════════════════════════ */
 
-/* ─── Shared: moving background position ────── */
 body {
     background-size: 400% 400%;
     transition: background 1.2s ease, color 0.6s ease;
@@ -490,7 +583,7 @@ body.anim-thunder {
     animation: thunderFlash 6s ease infinite;
 }
 @keyframes thunderFlash {
-    0%   { background-position: 0% 50%; filter: brightness(1); }
+    0%   { background-position: 0% 50%;  filter: brightness(1); }
     10%  { background-position: 20% 50%; filter: brightness(1.3); }
     11%  { background-position: 20% 50%; filter: brightness(0.8); }
     12%  { background-position: 20% 50%; filter: brightness(1.4); }
@@ -500,7 +593,7 @@ body.anim-thunder {
     91%  { background-position: 80% 50%; filter: brightness(0.9); }
     92%  { background-position: 80% 50%; filter: brightness(1.3); }
     93%  { background-position: 80% 50%; filter: brightness(1); }
-    100% { background-position: 0% 50%; filter: brightness(1); }
+    100% { background-position: 0% 50%;  filter: brightness(1); }
 }
 
 /* ─── Snow: gentle slow drift ────────────────── */
@@ -520,54 +613,69 @@ body.anim-fog {
     animation: fogFade 10s ease infinite;
 }
 @keyframes fogFade {
-    0%   { background-position: 0% 50%; filter: brightness(1); }
+    0%   { background-position: 0% 50%;   filter: brightness(1); }
     50%  { background-position: 100% 50%; filter: brightness(0.85); }
-    100% { background-position: 0% 50%; filter: brightness(1); }
+    100% { background-position: 0% 50%;   filter: brightness(1); }
 }
 
-.footer-social {
-    display: flex;
-    gap: 15px;
-    margin-top: 15px;
+
+/* ─── Footer ─────────────────────────────────── */
+.footer {
+    margin-top: 30px;
+    padding: 20px 10px;
 }
+
+.footer-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+}
+
 .footer-name {
     font-size: 0.7rem;
-    color: #666;
+    opacity: 0.5;
 }
+
 .footer-text {
     font-size: 0.7rem;
-    color: #999;
+    opacity: 0.4;
 }
+
 .footer-email a {
-    color: #0077ff !important;
+    color: #07e1e1 !important;
     text-decoration: none;
     transition: 0.3s;
     font-size: 0.7rem;
 }
 
 .footer-email a:hover {
-    color: #0056b3 !important;
+    opacity: 0.75;
     text-decoration: underline;
 }
+
+.footer-social {
+    display: flex;
+    gap: 15px;
+    margin-top: 10px;
+}
+
 .footer-social a {
     font-size: 20px;
-    color: #444;
+    opacity: 0.5;
+    color: inherit;
     transition: 0.3s;
 }
 
 .footer-social a:hover {
+    opacity: 1;
     transform: translateY(-3px);
 }
 
-/* GitHub hover */
-.footer-social a:nth-child(1):hover {
-    color: #000;
-}
-
-/* LinkedIn hover */
 .footer-social a:nth-child(2):hover {
     color: #0077b5;
 }
+
 .sr-only {
     position: absolute;
     width: 1px;

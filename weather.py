@@ -11,12 +11,12 @@ def get_current_weather(city=None, lat=None, lon=None):
 
     if lat and lon:
         url = (
-            f"http://api.openweathermap.org/data/2.5/weather"
+            f"https://api.openweathermap.org/data/2.5/weather"
             f"?appid={api_key}&lat={lat}&lon={lon}&units=metric"
         )
     else:
         url = (
-            f"http://api.openweathermap.org/data/2.5/weather"
+            f"https://api.openweathermap.org/data/2.5/weather"
             f"?appid={api_key}&q={city}&units=metric"
         )
 
@@ -28,12 +28,12 @@ def get_forecast(city=None, lat=None, lon=None):
 
     if lat and lon:
         request_url = (
-            f"http://api.openweathermap.org/data/2.5/forecast"
+            f"https://api.openweathermap.org/data/2.5/forecast"
             f"?appid={api_key}&lat={lat}&lon={lon}&units=metric"
         )
     else:
         request_url = (
-            f"http://api.openweathermap.org/data/2.5/forecast"
+            f"https://api.openweathermap.org/data/2.5/forecast"
             f"?appid={api_key}&q={city}&units=metric"
         )
 
