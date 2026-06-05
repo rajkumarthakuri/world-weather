@@ -525,3 +525,57 @@ body.anim-fog {
     100% { background-position: 0% 50%; filter: brightness(1); }
 }
 
+.footer-social {
+    display: flex;
+    gap: 15px;
+    margin-top: 15px;
+}
+.footer-name {
+    font-size: 0.7rem;
+    color: #666;
+}
+.footer-text {
+    font-size: 0.7rem;
+    color: #999;
+}
+.footer-email a {
+    color: #0077ff !important;
+    text-decoration: none;
+    transition: 0.3s;
+    font-size: 0.7rem;
+}
+
+.footer-email a:hover {
+    color: #0056b3 !important;
+    text-decoration: underline;
+}
+.footer-social a {
+    font-size: 20px;
+    color: #444;
+    transition: 0.3s;
+}
+
+.footer-social a:hover {
+    transform: translateY(-3px);
+}
+
+/* GitHub hover */
+.footer-social a:nth-child(1):hover {
+    color: #000;
+}
+
+/* LinkedIn hover */
+.footer-social a:nth-child(2):hover {
+    color: #0077b5;
+}
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
