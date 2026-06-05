@@ -48,7 +48,7 @@ worldWeather/
 
 ### Light Mode
 
-![Light Mode](screenshots/dark-mode.png)
+![Light Mode](screenshots/light-mode.png)
 
 ### 6Days forecast
 ![6Days Forecast](screenshots/6days-forecast.png)
