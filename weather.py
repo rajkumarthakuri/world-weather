@@ -5,20 +5,46 @@ import os
 
 load_dotenv()
 
-def get_current_weather(city="Kathmandu"):
-    request_url = f'http://api.openweathermap.org/data/2.5/weather?appid={os.getenv("API_KEY")}&q={city}&units=metric'
 
-    weather_data = requests.get(request_url).json()
+def get_current_weather(city=None, lat=None, lon=None):
+    api_key = os.getenv('API_KEY')
 
-    return weather_data
+    if lat and lon:
+        url = (
+            f"http://api.openweathermap.org/data/2.5/weather"
+            f"?appid={api_key}&lat={lat}&lon={lon}&units=metric"
+        )
+    else:
+        url = (
+            f"http://api.openweathermap.org/data/2.5/weather"
+            f"?appid={api_key}&q={city}&units=metric"
+        )
+
+    return requests.get(url).json()
 
 
-if __name__ == "__main___":
+def get_forecast(city=None, lat=None, lon=None):
+    api_key = os.getenv('API_KEY')
+
+    if lat and lon:
+        request_url = (
+            f"http://api.openweathermap.org/data/2.5/forecast"
+            f"?appid={api_key}&lat={lat}&lon={lon}&units=metric"
+        )
+    else:
+        request_url = (
+            f"http://api.openweathermap.org/data/2.5/forecast"
+            f"?appid={api_key}&q={city}&units=metric"
+        )
+
+    return requests.get(request_url).json()
+
+
+if __name__ == "__main__":
     print('\n**** Get Current Weather Conditions ****\n')
 
     city = input("\nPlease enter a City Name: ")
 
-    # Check for empty strings or strings with only space
     if not bool(city.strip()):
         city = "Kathmandu"
 

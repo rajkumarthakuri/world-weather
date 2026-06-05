@@ -2,19 +2,129 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ title }} weather</title>
-    <link href="{{url_for('static', filename='styles/style.css')}}" rel="stylesheet" />
-   
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <title>Weather</title>
+    <link href="{{ url_for('static', filename='styles/style.css') }}" rel="stylesheet" />
 </head>
-<body>
-    <h1>{{ title }} weather</h1>
-    <p>{{ status }} and {{ temp }} &deg;</p>
-    <p>Feels like {{ feels_like }} &deg;</p>    
 
-    <form action="/weather">
-      <input type="text" name="city" id="city"    placeholder="Enter a city" />
-       <button type="submit">submit</button>
+<body data-weather="{{ weather_main }}">
+
+    <!-- Hidden by default — JS shows it only when needed -->
+    <div id="loading-screen" style="display:none;">
+        <div class="loader-box">
+            <h2>📍 Detecting your location...</h2>
+            <p>Please allow location access</p>
+        </div>
+    </div>
+
+    <!-- Hidden by default — JS shows it only on first visit -->
+    <div id="permission-ui" style="display:none;">
+        <div class="perm-box">
+            <h2>🌍 Enable Location</h2>
+            <p>We need your location to show weather</p>
+            <button onclick="startLocation()">Allow</button>
+            <button onclick="skipLocation()">Skip</button>
+        </div>
+    </div>
+
+    <button id="themeToggle" class="theme-btn">☀️</button>
+
+    {% if error %}
+    <!-- Error State -->
+    <div class="error-box">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+        <p>{{ error }}</p>
+        <a href="/weather" class="error-home-btn">
+            <i class="fa-solid fa-house"></i> Go Home
+        </a>
+    </div>
+
+    {% else %}
+    <!-- Weather Card -->
+    <div class="card">
+        <h1>
+            <img src="https://flagcdn.com/w40/{{ country }}.png" alt="flag">
+            {{ title }} Weather
+        </h1>
+
+        <p class="status">
+            {{ status }}
+            <img src="https://openweathermap.org/img/wn/{{ icon }}@2x.png" alt="weather icon">
+        </p>
+
+        <h2 class="main-temp">{{ temp }} °C</h2>
+
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+            <div class="stat-item">
+                <i class="fa-solid fa-temperature-half"></i>
+                <span class="stat-label">Feels Like</span>
+                <span class="stat-value">{{ feels_like }} °C</span>
+            </div>
+            <div class="stat-item">
+                <i class="fa-solid fa-droplet"></i>
+                <span class="stat-label">Humidity</span>
+                <span class="stat-value">{{ humidity }}%</span>
+            </div>
+            <div class="stat-item">
+                <i class="fa-solid fa-wind"></i>
+                <span class="stat-label">Wind Speed</span>
+                <span class="stat-value">{{ wind }} m/s</span>
+            </div>
+            <div class="stat-item">
+                <i class="fa-solid fa-gauge"></i>
+                <span class="stat-label">Pressure</span>
+                <span class="stat-value">{{ pressure }} hPa</span>
+            </div>
+        </div>
+
+        <!-- Sunrise / Sunset -->
+        <div class="sun-times">
+            <div class="sun-item">
+                <i class="fa-solid fa-sun"></i>
+                <span>Sunrise</span>
+                <strong>{{ sunrise }}</strong>
+            </div>
+            <div class="sun-item">
+                <i class="fa-solid fa-moon"></i>
+                <span>Sunset</span>
+                <strong>{{ sunset }}</strong>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Search Form (always visible) -->
+    <form action="/weather" method="GET" class="search-form">
+        <input type="text" name="city" placeholder="Enter city" />
+        <button type="submit" class="search-btn" aria-label="Search">
+            <i class="fa-solid fa-magnifying-glass"></i>
+        </button>
+        <button type="button" class="location-btn" onclick="getLocationWeather()" aria-label="Use my location">
+            <i class="fa-solid fa-location-dot"></i>
+        </button>
     </form>
+
+    {% if not error %}
+    <!-- Forecast -->
+    <div class="forecast">
+        <h3>6-Day Forecast</h3>
+        <div class="forecast-container">
+            {% for day in forecast %}
+            <div class="forecast-card">
+                <p class="forecast-day">{{ day.date }}</p>
+                <p class="forecast-desc">{{ day.desc }}</p>
+                <img src="https://openweathermap.org/img/wn/{{ day.icon }}@2x.png" alt="weather icon">
+                <p class="forecast-temp">{{ day.temp }}°C</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <script src="{{ url_for('static', filename='scripts/script.js') }}"></script>
+
 </body>
 </html>
