@@ -58,6 +58,7 @@ worldWeather/
 
 ![Home Page](screenshots/home.png)
 
+
 ### Light Mode
 
 ![Light Mode](screenshots/light-mode.png)
