@@ -27,25 +27,30 @@ https://world-weather-hemv.onrender.com
 
 ---
 
-## 📁 Project Structure
+### 📁 Project Structure
 
----
+```text
 worldWeather/
-│── static/
-│   ├── styles/
-│   └── Scripts/
-│── templates/
-│   ├── weather.html
-│── server.py
-│── weather.py
-│── README.md
-
-
-
-
-
-
----
+├── server.py
+├── weather.py
+├── requirements.txt
+├── README.md
+├── screenshots/
+│   ├── home.png
+│   ├── light-mode.png
+│   ├── mobile-view.png
+│   ├── samsung-mobile.png
+│   ├── ipad-view.png
+│   ├── search-city.png
+│   └── 6days-forecast.png
+├── templates/
+│   └── weather.html
+└── static/
+    ├── styles/
+    │   └── style.css
+    └── Scripts/
+        └── script.js
+```
 
 ## Screenshots
 
@@ -72,3 +77,4 @@ worldWeather/
 ### Samsung Mobile View
 ![Samsung Mobile View](screenshots/samsung-mobile.png)
 
+```
