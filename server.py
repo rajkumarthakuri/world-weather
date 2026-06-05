@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect
 from weather import get_current_weather, get_forecast
 from waitress import serve
-from datetime import datetime
+from datetime import datetime, timezone, timedelta
 
 
 def get_flag(country_code):
@@ -43,8 +43,11 @@ def get_weather():
 
     icon = weather.get("icon")
 
-    sunrise = datetime.fromtimestamp(weather_data["sys"]["sunrise"]).strftime("%H:%M")
-    sunset = datetime.fromtimestamp(weather_data["sys"]["sunset"]).strftime("%H:%M")
+    tz_offset = weather_data["timezone"]
+    tz = timezone(timedelta(seconds=tz_offset))
+
+    sunrise = datetime.fromtimestamp(weather_data["sys"]["sunrise"], tz=tz).strftime("%H:%M")
+    sunset = datetime.fromtimestamp(weather_data["sys"]["sunset"], tz=tz).strftime("%H:%M")
     pressure = weather_data["main"]["pressure"]
     country = weather_data["sys"]["country"].lower()
     weather_main = weather_data["weather"][0]["main"]
